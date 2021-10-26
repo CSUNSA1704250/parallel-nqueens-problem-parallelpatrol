@@ -1,0 +1,4 @@
+process terminated in 20.2587 seconds.
+
+number of solutions: 365596
+

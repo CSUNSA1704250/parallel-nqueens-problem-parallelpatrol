@@ -1,12 +1,12 @@
+#include <omp.h>
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
 #include<stdio.h>
 #include <fstream>
+#include <unistd.h>
 using namespace std;
 using std::ofstream;
-
-int x=0;
 
 bool comprobar(int reinas[],int n, int k){
 	int i;
@@ -18,7 +18,7 @@ bool comprobar(int reinas[],int n, int k){
 	return true;
 }
 
-void Nreinas(int reinas[],int n, int k,ofstream  & outdata ){
+void Nreinas(int reinas[],int n, int k,ofstream  & outdata, int &x ){
 	if(k==n){
 		x++;
 		for(int i=0;i<n;i++){
@@ -26,11 +26,10 @@ void Nreinas(int reinas[],int n, int k,ofstream  & outdata ){
 		}
 		outdata <<endl;
 	}
-
 	else{
 		for(reinas[k]=0;reinas[k]<n;reinas[k]++){
 			if(comprobar(reinas,n,k)){
-				Nreinas(reinas,n,k+1,outdata);
+				Nreinas(reinas,n,k+1,outdata, x);
 			}
 		}
 	}
@@ -39,30 +38,56 @@ void Nreinas(int reinas[],int n, int k,ofstream  & outdata ){
 int main(int argc, char *argv[]) {
 	int k=0;
 	int cant;
-  int n;
 
   if(argv[1] != NULL) {
 
     cant = atoi(argv[1]);
-    int *reinas = new int[cant];
+		int nthreads = cant;
+		omp_set_dynamic(0);
+    omp_set_num_threads(cant);
 
-    for(int i=0;i<cant;i++){
-      reinas[i]=-1;
-    }
+		int *total = new int[cant];
 
-    clock_t start, end;
+		ofstream outdata;
+		outdata.open("time.txt");
+
+		ofstream *solutions = new ofstream[cant];
+
+		for(int y=0; y < cant; y++){
+			solutions[y].open("sol" + to_string(y) + ".txt");
+			solutions[y]  << "#Solutions for " << cant << " Queens." << endl << endl;
+		}
+
+		clock_t start, end;
     start = clock();
-    ofstream outdata; //
-    outdata.open("example3.txt");
-    if( !outdata ) {
-      cerr << "Error: file could not be opened" << endl;
-      exit(1);
-    }
 
-    outdata  << "#Solutions for " << cant << " Queens." << endl << endl;
-    Nreinas(reinas,cant,k, outdata);
-    end = clock();
-    outdata  << "process terminated in " << ((float)end - start) / CLOCKS_PER_SEC << " seconds." << endl << endl;
+		int tid;
+
+		#pragma omp parallel private(nthreads, tid)
+    {
+			tid = omp_get_thread_num();
+
+			int *reinas = new int[cant];
+
+			for(int i=0;i<cant;i++){
+				reinas[i]=-1;
+			}
+
+			reinas[0]=tid;
+			Nreinas(reinas,cant,k+1, solutions[tid], total[tid]);
+
+			solutions[tid].close();
+		}
+
+		end = clock();
+
+		int totalFinal = 0;
+		for(int i=0;i<cant;i++){
+			totalFinal += total[i];
+		}
+
+    outdata  << "process terminated in " << (float)(end - start) / CLOCKS_PER_SEC << " seconds." << endl << endl;
+		outdata  << "number of solutions: " << totalFinal << endl << endl;
     outdata.close();
   }
 	return 0;
