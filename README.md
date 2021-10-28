@@ -19,11 +19,23 @@ g++ src/npnreinas.cpp -o build/npmain
 ### Parallel
 
 ```
-./build/main 4
+time ./build/main 12
 ```
 
 ### NonParallel
 
 ```
-./build/npmain 14
+time ./build/npmain 12
 ```
+
+## Results
+
+With 12 queens
+
+Parallel
+
+![Parallel](images/parallel.png)
+
+NonParallel
+
+![Non Parallel](images/nonparallel.png)

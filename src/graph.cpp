@@ -63,8 +63,8 @@ void Graficar(vector<int> &vector1,int & x){
 }
 
 int main(int argc, char *argv[]) {
-    int x = 4;
-    vector <int> pos{2,4,1,3};
+    int x = 10;
+    vector <int> pos{1,3,5,7,9,0,2,4,6,8};
     Graficar(pos,x);
     return 0;
 return 0;

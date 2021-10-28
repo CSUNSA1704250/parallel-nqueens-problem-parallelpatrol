@@ -1,4 +1,5 @@
-process terminated in 20.2587 seconds.
+Solutions for 4 queens
 
-number of solutions: 365596
+process terminated in 0.567408 procesor seconds time.
+number of solutions: 14200
 

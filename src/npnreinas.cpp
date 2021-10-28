@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
         clock_t start, end;
         start = clock();
         ofstream outdata; //
-        outdata.open("example3.txt"); // opens the file
+        outdata.open("nonparalel.txt"); // opens the file
         if( !outdata ) { 
         cerr << "Error: file could not be opened" << endl;
         exit(1);

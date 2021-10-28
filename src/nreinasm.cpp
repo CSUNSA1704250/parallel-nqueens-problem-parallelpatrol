@@ -4,9 +4,44 @@
 #include <ctime>
 #include<stdio.h>
 #include <fstream>
+#include <vector>
+#include <string>
 #include <unistd.h>
 using namespace std;
 using std::ofstream;
+using std::ifstream;
+
+void Graficar(vector<int> &vector1,int & x){
+    ofstream outdata; //
+    outdata.open("graph.dot"); // opens the file
+    if( !outdata ) { 
+            cerr << "Error: file could not be opened" << endl;
+            exit(1);
+    }
+    outdata  << "digraph D { "<< endl;
+    outdata  <<" node [shape=plaintext]"<<endl;
+    outdata  <<" some_node [" <<endl;
+    outdata  <<"  label=<" <<endl;
+    outdata  <<"   <table border=\"0\" cellborder=\"1\" cellspacing=\"0\">" <<endl;
+
+    for (int i=0 ; i<x;i++){
+        outdata  <<"    ";
+				outdata <<"<tr>";
+        for (int j=0; j<x;j++){
+						if(vector1[i] == j){
+							outdata <<"<td>&#9813;</td>";
+						}
+						else{
+							outdata <<"<td> </td>";
+						}
+        }
+				outdata <<"</tr>";
+        outdata  <<endl;
+    }
+    outdata  <<"   </table>>" <<endl;
+    outdata  <<" ];" <<endl;
+    outdata  <<"}" <<endl;
+}
 
 bool comprobar(int reinas[],int n, int k){
 	int i;
@@ -34,7 +69,7 @@ void Nreinas(int reinas[],int n, int k,ofstream  & outdata, int &x ){
 		}
 	}
 }
-		
+
 int main(int argc, char *argv[]) {
 	int k=0;
 	int cant;
@@ -54,8 +89,7 @@ int main(int argc, char *argv[]) {
 		ofstream *solutions = new ofstream[cant];
 
 		for(int y=0; y < cant; y++){
-			solutions[y].open("sol" + to_string(y) + ".txt");
-			solutions[y]  << "#Solutions for " << cant << " Queens." << endl << endl;
+			solutions[y].open("thread-" + to_string(y) + ".txt");
 		}
 
 		clock_t start, end;
@@ -86,9 +120,35 @@ int main(int argc, char *argv[]) {
 			totalFinal += total[i];
 		}
 
-    outdata  << "process terminated in " << (float)(end - start) / CLOCKS_PER_SEC << " seconds." << endl << endl;
+		outdata  << "Solutions for 4 queens" << endl << endl;
+    outdata  << "process terminated in " << (float)(end - start) / CLOCKS_PER_SEC << " procesor seconds time."<< endl;
 		outdata  << "number of solutions: " << totalFinal << endl << endl;
     outdata.close();
+
+		ifstream *concat = new ifstream[cant];
+
+		ofstream of_c("final.txt", std::ios_base::binary);
+
+		ifstream if_b(("time.txt"), std::ios_base::binary);
+		of_c << if_b.rdbuf();
+
+		for(int y=0; y < cant; y++){
+			ifstream if_a(("thread-" + to_string(y) + ".txt"), std::ios_base::binary);
+			of_c << if_a.rdbuf();
+		}
+
+		ifstream myfile;
+		myfile.open("thread-1.txt");
+
+		vector <int> toRender;
+		float a;
+    for(int y=0; y < cant; y++){
+			myfile >> a;
+			toRender.push_back(a);
+    }
+
+		Graficar(toRender,cant);
+
   }
 	return 0;
 }
