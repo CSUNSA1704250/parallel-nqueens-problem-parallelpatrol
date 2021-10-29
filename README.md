@@ -5,7 +5,7 @@
 ### Parallel
 
 ```
-g++ src/nreinasm.cpp -o build/main -fopenmp
+g++ src/nreinasm.cpp -o build/main -fopenmp -O2
 ```
 
 ### NonParallel
