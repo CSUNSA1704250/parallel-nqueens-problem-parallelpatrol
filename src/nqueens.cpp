@@ -201,7 +201,7 @@ int main(int argc, char *argv[]) {
 
             ifstream *concat = new ifstream[cant];
 
-            ofstream of_c("final.txt", std::ios_base::binary);
+            ofstream of_c("solutions.txt", std::ios_base::binary);
 
             ifstream if_b(("time.txt"), std::ios_base::binary);
             of_c << if_b.rdbuf();
