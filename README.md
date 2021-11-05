@@ -5,7 +5,11 @@
 ### Parallel
 
 ```
+<<<<<<< HEAD
 g++ src/nqueens.cpp -o build/main -fopenmp -O2
+=======
+g++ src/nreinasm.cpp -o build/main -fopenmp -O2
+>>>>>>> a3e57d2a0931cb5b42af3577975c2aa5d911dddd
 ```
 
 ### NonParallel
