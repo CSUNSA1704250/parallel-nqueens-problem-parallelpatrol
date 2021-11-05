@@ -5,7 +5,7 @@
 ### Parallel
 
 ```
-g++ src/nreinasm.cpp -o build/main -fopenmp
+g++ src/nqueens.cpp -o build/main -fopenmp -O2
 ```
 
 ### NonParallel
@@ -19,8 +19,12 @@ g++ src/npnreinas.cpp -o build/npmain
 ### Parallel
 
 ```
-time ./build/main 12
+time ./build/main find 12
 ```
+```
+time ./build/main all 12 
+```
+
 
 ### NonParallel
 
