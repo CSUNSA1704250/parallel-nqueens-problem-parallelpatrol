@@ -5,7 +5,7 @@
 ### Parallel
 
 ```
-g++ src/nqueens.cpp -o build/main -fopenmp -O2
+g++ src/nqueens.cpp -o build/main -fopenmp
 
 ```
 

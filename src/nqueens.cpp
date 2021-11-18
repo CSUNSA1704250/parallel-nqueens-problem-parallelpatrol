@@ -6,12 +6,14 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <bitset>
 #include <unistd.h>
 using namespace std;
 using std::ofstream;
 using std::ifstream;
-	int cant;
-    bool found = false;
+string type;
+int cant;
+bool found = false;
 void Graficar(vector<int> &vector1,int & x){
     ofstream outdata; //
     outdata.open("graph.dot"); // opens the file
@@ -44,41 +46,6 @@ void Graficar(vector<int> &vector1,int & x){
     outdata  <<"}" <<endl;
 }
 
-void Graficar2(int *&queens)
-{
-    int cantidad = cant;
-    vector<vector<string>> matriz(cantidad);
-    for (int i = 0; i < cantidad; i++)
-    {
-        matriz[i].resize(cantidad);
-    }
-
-    for (int i = 0; i < cantidad; i++)
-    {
-        matriz[queens[i]][i] = "&#9813;";
-    }
-
-    string salida = "digraph D {\n";
-
-    salida = salida + "    node [shape=plaintext]\n  some_node [ \n  label=< \n  <table border=\"0\" cellborder=\"1\" cellspacing=\"0\"> \n ";
-
-    for (int i = 0; i < cantidad; i++)
-    {
-        salida = salida + " <tr>";
-        for (int j = 0; j < cantidad; j++)
-        {
-            salida = salida + "<td>"+matriz[i][j]+" </td>";
-        }
-				salida = salida + " </tr>\n";
-    }
-
-    salida = salida + "</table>>];\n }";
-
-    ofstream file;
-    file.open("graph.dot");
-    file << salida;
-    file.close();
-}
 
 bool comprobar(int reinas[],int n, int k){
 	int i;
@@ -90,23 +57,27 @@ bool comprobar(int reinas[],int n, int k){
 	return true;
 }
 
-void try_queen_one_solution(int *&queens, int col)
+void try_queen_one_solution(vector<int> &queens, bitset<200> &rows, bitset<200> &d1, bitset<200> &d2, int col)
 {
     if (found)
         return;
     if (col == cant && !found)
     {
-        /* print_solution(queens); */
         found = true;
-        Graficar2(queens);
+        cout <<"Solution for "<<cant<<" Queens: "<<endl;
+        for (int i: queens)
+            std::cout << i << ' ';
+        Graficar(queens, cant);
         return;
     }
 
-    for (int i = 0; i < cant; ++i)
-        if (comprobar(queens, i, col))
+    for (int r = 0; r < cant; ++r)
+        if (!rows[r] && !d1[r - col + cant - 1] && !d2[r + col])
         {
-            queens[col] = i;
-            try_queen_one_solution(queens, col + 1);
+            queens[col] = r;
+            rows[r] = d1[r - col + cant - 1] = d2[r + col] = 1;
+            try_queen_one_solution(queens, rows, d1, d2, col + 1);
+            rows[r] = d1[r - col + cant - 1] = d2[r + col] = 0;
         }
 }
 void find_a_solution()
@@ -114,20 +85,17 @@ void find_a_solution()
     int col = 0;
     #pragma omp parallel
     {
-        int *priv_queens = new int[cant];
+        vector<int> priv_queens(cant);
+        bitset<200> rows, d1, d2;
         #pragma omp for nowait
         for (int i = 0; i < cant; ++i)
         {
-            if (comprobar(priv_queens, i, col))
-            {
-                priv_queens[col] = i;
-                try_queen_one_solution(priv_queens, col + 1);
-            }
+            priv_queens[col] = i;
+            rows[i] = d1[i - col + cant - 1] = d2[i + col] = 1;
+            try_queen_one_solution(priv_queens, rows, d1, d2, col + 1);
         }
-        delete[] priv_queens;
     }
 }
-
 void Nreinas(int reinas[],int n, int k,ofstream  & outdata, int &x ){
 	if(k==n){
 		x++;
@@ -226,3 +194,4 @@ int main(int argc, char *argv[]) {
     }
 	return 0;
 }
+
