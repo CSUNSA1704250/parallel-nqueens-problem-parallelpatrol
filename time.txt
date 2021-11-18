@@ -1,5 +1,5 @@
-Solutions for 4 queens
+Solutions for 15 Queens.
 
-process terminated in 0.567408 procesor seconds time.
-number of solutions: 14200
+process terminated in 134.984 procesor seconds time.
+number of solutions: 2279184
 

@@ -138,9 +138,11 @@ void Nreinas(int reinas[],int n, int k,ofstream  & outdata, int &x ){
 	}
 	else{
 		for(reinas[k]=0;reinas[k]<n;reinas[k]++){
-			if(comprobar(reinas,n,k)){
-				Nreinas(reinas,n,k+1,outdata, x);
-			}
+            if(!(reinas[k-1] == reinas[k] || reinas[k-1]+1 == reinas[k] || reinas[k-1]-1 == reinas[k])){
+                if(comprobar(reinas,n,k)){
+                    Nreinas(reinas,n,k+1,outdata, x);
+                }
+            }
 		}
 	}
 }
@@ -210,18 +212,6 @@ int main(int argc, char *argv[]) {
                 ifstream if_a(("thread-" + to_string(y) + ".txt"), std::ios_base::binary);
                 of_c << if_a.rdbuf();
             }
-
-            ifstream myfile;
-            myfile.open("thread-1.txt");
-
-            vector <int> toRender;
-            float a;
-        for(int y=0; y < cant; y++){
-                myfile >> a;
-                toRender.push_back(a);
-    }
-
-		Graficar(toRender,cant);
     }
     else if (type == "find")
     {
